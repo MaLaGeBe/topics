@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: 专题
-Version: v1.0
+Version: v1.0.1
 Plugin URL: 
 Description: 为你的Emlog添加一个专题功能
 Author: MaLaGeBe
@@ -140,7 +140,7 @@ function get_topics($id = '')
         return $topics_cache;
     } elseif (isset($topics_cache[$id])) {
         return $topics_cache[$id];
-    }else{
+    } else {
         return false;
     }
 }
@@ -168,12 +168,26 @@ class TopicsCache extends Cache
         $topics_cache = [];
 
         foreach ($topicsSort as $key => $value) {
-            $topicsSort[$key]['logs'] = $topicsData[$key];
+            $topicsSort[$key]['logs'] = isset($topicsData[$key]) ? $topicsData[$key] : array();
         }
 
         $topics_cache = $topicsSort;
 
         $cacheData = serialize($topics_cache);
         $this->cacheWrite($cacheData, 'topics');
+    }
+}
+
+class TopicsUrl extends Url
+{
+    static function topics($topic, $page = null)
+    {
+        $topicUrl = '';
+
+        $topicUrl = BLOG_URL . '?plugin=topics/' . $topic;
+        if ($page)
+            $topicUrl .= '/';
+
+        return $topicUrl;
     }
 }
